@@ -19,6 +19,7 @@ use League\Flysystem\UnableToReadFile;
 use League\Flysystem\UnableToRetrieveMetadata;
 use League\Flysystem\UnableToSetVisibility;
 use League\Flysystem\UnableToWriteFile;
+use League\Flysystem\Visibility;
 use League\MimeTypeDetection\FinfoMimeTypeDetector;
 use League\MimeTypeDetection\MimeTypeDetector;
 use MicrosoftAzure\Storage\Blob\BlobRestProxy;
@@ -223,7 +224,8 @@ class AzureBlobStorageAdapter implements FilesystemAdapter
 
     public function visibility(string $path): FileAttributes
     {
-        throw UnableToRetrieveMetadata::visibility($path, 'Azure does not support visibility');
+        // Fix for stamatic/cms Imaging when Azure does not support reading visibility
+        return new FileAttributes($path, null, Visibility::PUBLIC);
     }
 
     public function mimeType(string $path): FileAttributes
